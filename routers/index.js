@@ -19,9 +19,16 @@ router.prefix('/api');
 router.get('/getErrorList', async (ctx) => {
 	ctx.body = { code: 200, data: errorList };
 });
-
+router.get('/getRecordScreenId', async (ctx) => {
+	const id = ctx.query.id
+	const res = recordScreenList.filter(x=>x.recordScreenId === id)
+	ctx.body = { code: 200, data: res };
+});
 router.post('/reportData', async (ctx, next) => {
 	try {
+		if(ctx.request.body.type === 'recordScreen'){
+			recordScreenList.push(ctx.request.body);
+		}
 		const params = await coBody.json(ctx.req);
 		console.log('params.type', params.type);
 		ctx.set('Content-Type', 'application/json');
@@ -30,6 +37,7 @@ router.post('/reportData', async (ctx, next) => {
 			performanceList.push(params);
 		} else if (params.type == 'recordScreen') {
 			recordScreenList.push(params);
+			console.log('recordScreenList',recordScreenList)
 		} else if (params.type == 'whiteScreen') {
 			whiteScreenList.push(params);
 		} else {
@@ -55,7 +63,6 @@ router.get('/getmap', async (ctx, next) => {
 			// 需要封装成 Promise，等待执行完返回请求。回调中无法 ctx.body 返回响应
 			try {
 				got.get(mapFile).then((res) => {
-					const { data } = res;
 					console.log(res.body);
 					resolve(res.body);
 				});
@@ -91,4 +98,6 @@ router.get('/getmap', async (ctx, next) => {
 		});
 	}
 });
+
+
 module.exports = router;
