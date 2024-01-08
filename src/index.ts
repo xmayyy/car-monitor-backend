@@ -35,6 +35,14 @@ dataSource
 	.initialize()
 	.then(() => {
 		const app = new Koa();
+		app.use(async (ctx, next) => {
+			ctx.set("Access-Control-Allow-Credentials", 'true');
+  // ctx.set('Access-Control-Allow-Origin', '*');
+  // ctx.set('Access-Control-Allow-Headers', 'Content-Type');
+  // ctx.set('Access-Control-Allow-Methods', '*');
+  // ctx.set('Content-Type', 'application/json;charset=utf-8');
+  await next();
+});
 		app.use(cors());
 		app.use(bodyParser());
 		// 无JWTtoken可访问

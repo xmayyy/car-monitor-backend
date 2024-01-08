@@ -99,5 +99,7 @@ import AuthController from '../controllers/auth.ts';
 // });
 
 unprotectedRouter.post('/auth/register', AuthController.register);
+unprotectedRouter.post('/auth/login', AuthController.login);
+unprotectedRouter.get('/auth/checkLogin', AuthController.checkLogin);
 
 export {unprotectedRouter};
