@@ -1,0 +1,27 @@
+{
+	"compilerOptions": {
+		"target": "ES2017",
+		"module": "ESNext",
+		"lib": ["es6"],
+		"sourceMap": true,
+		"outDir": "dist",
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"moduleResolution": "node",
+		"baseUrl": ".",
+		"paths": {
+			"*": ["node_modules/*"]
+		},
+    "allowJs": true,
+    "checkJs": false,
+		"allowSyntheticDefaultImports":true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"allowImportingTsExtensions":true,
+		"noEmit":true
+	},
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src", "src/typings/*.d.ts"],
+	"ts-node": { "esm": true }
+}

@@ -6,6 +6,7 @@ import coBody from 'co-body';
 import got from 'got';
 const unprotectedRouter = new Router();
 import AuthController from '../controllers/auth.ts';
+import uploadController from '../controllers/upload.ts'
 // // 存储性能数据
 // let performanceList = [];
 // // 存储错误数据
@@ -101,5 +102,7 @@ import AuthController from '../controllers/auth.ts';
 unprotectedRouter.post('/auth/register', AuthController.register);
 unprotectedRouter.post('/auth/login', AuthController.login);
 unprotectedRouter.get('/auth/checkLogin', AuthController.checkLogin);
-
+// 图片上传
+unprotectedRouter.post('/upload/getAccessToken',uploadController.getAccessToken)
+unprotectedRouter.post('/upload/uploadImg',uploadController.uploadImg)
 export {unprotectedRouter};
