@@ -1,4 +1,6 @@
 import got from 'got';
+import { Image } from '../entity/image.ts';
+import { dataSource } from '../index.ts';
 
 const AK = '4ww9C81IMUF8unkkR44ZqqA8';
 const SK = 's7GhGeALiHjgsmuKsBfWOP9AUR1SAhNS';
@@ -30,26 +32,39 @@ export default class uploadController {
 		ctx.body = { access_token };
 	}
 	public static async uploadImg(ctx: any) {
-    console.log('ctx',ctx.request.body.image)
-    console.log('ctx',ctx.request.body.access_token)
+		const username = ctx.cookies.get('USER_ID');
     const imageBase64 = ctx.request.body.image
     const access_token = ctx.request.body.access_token
-
-    // const url = 'https://aip.baidubce.com/rest/2.0/image-classify/v1/driver_behavior?access_token=' + access_token;
-    // const options = {
-    //   methods: 'post',
-    //   form: {
-    //     image:imageBase64
-    //   },
-    // };
+		console.log('username',username)
+    const url = 'https://aip.baidubce.com/rest/2.0/image-classify/v1/driver_behavior?access_token=' + access_token;
+    const options = {
+      methods: 'post',
+      form: {
+        image:imageBase64
+      },
+    };
     
+		// 真实请求算法服务
     // const data = await got.post(url, options);
     // console.log('data',data.body)
     // ctx.body = data.body;
 
+		// mock数据
+		const data =  {"person_num":1,"person_info":[{"attributes":{"both_hands_leaving_wheel":{"score":0.0027262079529464,"threshold":0.75},"eyes_closed":{"score":0.52571189403534,"threshold":0.55},"no_face_mask":{"score":0.99098205566406,"threshold":0.75},"not_buckling_up":{"score":0.35487979650497,"threshold":0.44},"smoke":{"score":0.0050711673684418,"threshold":0.48},"not_facing_front":{"score":0.38045233488083,"threshold":0.5},"cellphone":{"score":0.0021178498864174,"threshold":0.69},"yawning":{"score":0.94005098938942,"threshold":0.5},"head_lowered":{"score":0.089937459677458,"threshold":0.55}},"location":{"score":0.97623002529144,"top":8,"left":0,"width":397,"height":230}}],"driver_num":1,"log_id":1751885228515024257}
+		console.log('data',data)
+		const newImage = new Image();
+		newImage.username = username
+		newImage.image64 = imageBase64
+		newImage.person_info = JSON.stringify(data.person_info)
+		newImage.driver_num = data.driver_num
+		newImage.log_id = data.log_id
+		newImage.person_num = data.person_num
+		// 保存到数据库
+		const res = await dataSource.manager.save(newImage);
+		console.log('图片已保存。用户ID为', newImage.id, res);
     // mock数据
-    ctx.body = {"person_num":1,"person_info":[{"attributes":{"both_hands_leaving_wheel":{"score":0.0027262079529464,"threshold":0.75},"eyes_closed":{"score":0.52571189403534,"threshold":0.55},"no_face_mask":{"score":0.99098205566406,"threshold":0.75},"not_buckling_up":{"score":0.35487979650497,"threshold":0.44},"smoke":{"score":0.0050711673684418,"threshold":0.48},"not_facing_front":{"score":0.38045233488083,"threshold":0.5},"cellphone":{"score":0.0021178498864174,"threshold":0.69},"yawning":{"score":0.94005098938942,"threshold":0.5},"head_lowered":{"score":0.089937459677458,"threshold":0.55}},"location":{"score":0.97623002529144,"top":8,"left":0,"width":397,"height":230}}],"driver_num":1,"log_id":1751885228515024257}
-		
+    ctx.body = '上传成功'
+		ctx.status = 200
 	}
 }
 

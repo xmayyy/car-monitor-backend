@@ -2,7 +2,10 @@ import Koa from 'koa';
 import cors from 'koa2-cors';
 import bodyParser from 'koa-bodyparser';
 import { unprotectedRouter } from './routers/index.js';
+
 import { User } from './entity/user.js';
+import { Image } from './entity/image.js';
+
 import { JWT_SECRET } from './constant.js';
 import jwt from 'koa-jwt';
 import 'reflect-metadata';
@@ -16,7 +19,7 @@ var dataSource = new DataSource({
 	password: '123456',
 	database: 'koa',
 	synchronize: false,
-	entities: [User],
+	entities: [User,Image],
 });
 // const json = require('koa-json');
 // app.use(json());
