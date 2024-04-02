@@ -1,5 +1,6 @@
 import { Context } from 'koa';
-import { User } from '../entity/user';
+import { User,Image,People,Group } from '../entity/index.ts';
+
 export default class UserController {
   public static async listUsers(ctx: Context) {
     ctx.body = 'ListUsers controller';

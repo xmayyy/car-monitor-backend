@@ -6,7 +6,9 @@ import coBody from 'co-body';
 import got from 'got';
 const unprotectedRouter = new Router();
 import AuthController from '../controllers/auth.ts';
-import uploadController from '../controllers/upload.ts'
+import uploadController from '../controllers/upload.ts';
+import peopleController from '../controllers/people.ts';
+import groupController from '../controllers/group.ts';
 // // 存储性能数据
 // let performanceList = [];
 // // 存储错误数据
@@ -103,6 +105,21 @@ unprotectedRouter.post('/auth/register', AuthController.register);
 unprotectedRouter.post('/auth/login', AuthController.login);
 unprotectedRouter.get('/auth/checkLogin', AuthController.checkLogin);
 // 图片上传
-unprotectedRouter.post('/upload/getAccessToken',uploadController.getAccessToken)
-unprotectedRouter.post('/upload/uploadImg',uploadController.uploadImg)
-export {unprotectedRouter};
+unprotectedRouter.post(
+	'/upload/getAccessToken',
+	uploadController.getAccessToken
+);
+unprotectedRouter.post('/upload/uploadImg', uploadController.uploadImg);
+unprotectedRouter.get('/upload/getList', uploadController.getList);
+unprotectedRouter.post('/upload/deleteOneId', uploadController.deleteOneId);
+// 人员
+unprotectedRouter.post('/people/addPeople', peopleController.addPeople);
+unprotectedRouter.post('/people/deletePeople', peopleController.deletePeople);
+unprotectedRouter.post('/people/updatePeople', peopleController.updatePeople);
+unprotectedRouter.get('/people/getPeopleList', peopleController.getPeopleList);
+// 小组
+unprotectedRouter.post('/group/addGroup', groupController.addGroup);
+unprotectedRouter.post('/group/deleteGroup', groupController.deleteGroup);
+unprotectedRouter.post('/group/updateGroup', groupController.updateGroup);
+unprotectedRouter.get('/group/getGroupList', groupController.getGroupList);
+export { unprotectedRouter };

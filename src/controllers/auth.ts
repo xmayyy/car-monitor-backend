@@ -1,5 +1,6 @@
 import * as argon2 from 'argon2';
-import { User } from '../entity/user.ts';
+import { User, Image, People, Group } from '../entity/index.ts';
+
 import { dataSource } from '../index.ts';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../constant.ts';
@@ -17,7 +18,7 @@ export default class AuthController {
 			ctx.status = 200;
 			ctx.body = { message: '用户名不存在' };
 		} else if (await argon2.verify(user.password, ctx.request.body.password)) {
-			console.log(' user.username', user.username)
+			console.log(' user.username', user.username);
 			ctx.status = 200;
 			ctx.cookies.set('USER_ID', user.username, {
 				httpOnly: false,
@@ -60,7 +61,7 @@ export default class AuthController {
 						info: 'token无效',
 					};
 				} else {
-					console.log('token验证正确',decoded);
+					console.log('token验证正确', decoded);
 					ctx.body = {
 						success: true,
 						info: '登录成功',
