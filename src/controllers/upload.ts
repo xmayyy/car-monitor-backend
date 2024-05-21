@@ -36,7 +36,9 @@ export default class uploadController {
 	public static async uploadImg(ctx: any) {
 		const username = ctx.cookies.get('USER_ID');
 		const imageBase64 = ctx.request.body.image;
+		const people_id = ctx.request.body.people_id;
 		const access_token = ctx.request.body.access_token;
+		const detect_time = ctx.request.body.detect_time;
 		// console.log('username',username)
 		const url =
 			'https://aip.baidubce.com/rest/2.0/image-classify/v1/driver_behavior?access_token=' +
@@ -50,12 +52,12 @@ export default class uploadController {
 
 		// 真实请求算法服务
 		const data: any = await got.post(url, options);
-		// console.log('data',data.body)
+		console.log('data', data.body);
 		// ctx.body = data.body;
 
 		// // mock数据
-		// const data =  {"person_num":1,"person_info":[{"attributes":{"both_hands_leaving_wheel":{"score":0.0027262079529464,"threshold":0.75},"eyes_closed":{"score":0.52571189403534,"threshold":0.55},"no_face_mask":{"score":0.99098205566406,"threshold":0.75},"not_buckling_up":{"score":0.35487979650497,"threshold":0.44},"smoke":{"score":0.0050711673684418,"threshold":0.48},"not_facing_front":{"score":0.38045233488083,"threshold":0.5},"cellphone":{"score":0.0021178498864174,"threshold":0.69},"yawning":{"score":0.94005098938942,"threshold":0.5},"head_lowered":{"score":0.089937459677458,"threshold":0.55}},"location":{"score":0.97623002529144,"top":8,"left":0,"width":397,"height":230}}],"driver_num":1,"log_id":1751885228515024257}
-		console.log('dataaaaaa', data);
+		// const data:any =  {"person_num":1,"person_info":[{"attributes":{"both_hands_leaving_wheel":{"score":0.0027262079529464,"threshold":0.75},"eyes_closed":{"score":0.52571189403534,"threshold":0.55},"no_face_mask":{"score":0.99098205566406,"threshold":0.75},"not_buckling_up":{"score":0.35487979650497,"threshold":0.44},"smoke":{"score":0.0050711673684418,"threshold":0.48},"not_facing_front":{"score":0.38045233488083,"threshold":0.5},"cellphone":{"score":0.0021178498864174,"threshold":0.69},"yawning":{"score":0.94005098938942,"threshold":0.5},"head_lowered":{"score":0.089937459677458,"threshold":0.55}},"location":{"score":0.97623002529144,"top":8,"left":0,"width":397,"height":230}}],"driver_num":1,"log_id":1751885228515024258}
+		// console.log('dataaaaaa', data);
 
 		const newImage = new Image();
 		newImage.username = username;
@@ -64,6 +66,8 @@ export default class uploadController {
 		newImage.driver_num = JSON.parse(data.body).driver_num;
 		newImage.log_id = JSON.parse(data.body).log_id;
 		newImage.person_num = JSON.parse(data.body).person_num;
+		newImage.people_id = people_id;
+		newImage.detect_time = detect_time;
 		// 保存到数据库
 		const res = await dataSource.manager.save(newImage);
 		console.log('图片已保存。用户ID为', newImage.id, res);
@@ -79,10 +83,33 @@ export default class uploadController {
 			.createQueryBuilder('image')
 			.where('image.username = :username', { username })
 			.getMany();
+		let imageListWithName:any = []
+		await Promise.all(imageList.map(async (item:any) => {
+			console.log('item.people_id', item.people_id);
+			if (item.people_id) {
+				const people: any = await dataSource
+					.getRepository(People)
+					.createQueryBuilder('people')
+					.where('people_id = :id', { id: item.people_id })
+					.getOne();
+				console.log('people', people);
+				if (people) {
+					item.name = people.name
+					return item;
+				} else {
+					return item;
+				}
+			}
+			return item;
+		})).then((res)=>{
+			imageListWithName = res
+		})
+		// console.log('imageList', imageList);
 		// console.log('imageList',imageList)
-		if (imageList) {
+		
+		if (imageListWithName) {
 			// console.log('imageList',imageList)
-			ctx.body = imageList;
+			ctx.body = imageListWithName.reverse();
 			ctx.status = 200;
 		} else {
 			ctx.body = '获取资源失败';

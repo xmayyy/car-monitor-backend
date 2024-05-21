@@ -5,6 +5,7 @@ import coBody from 'co-body';
 // const json = require('koa-json');
 import got from 'got';
 const unprotectedRouter = new Router();
+const protectedRouter = new Router();
 import AuthController from '../controllers/auth.ts';
 import uploadController from '../controllers/upload.ts';
 import peopleController from '../controllers/people.ts';
@@ -105,21 +106,21 @@ unprotectedRouter.post('/auth/register', AuthController.register);
 unprotectedRouter.post('/auth/login', AuthController.login);
 unprotectedRouter.get('/auth/checkLogin', AuthController.checkLogin);
 // 图片上传
-unprotectedRouter.post(
+protectedRouter.post(
 	'/upload/getAccessToken',
 	uploadController.getAccessToken
 );
-unprotectedRouter.post('/upload/uploadImg', uploadController.uploadImg);
-unprotectedRouter.get('/upload/getList', uploadController.getList);
-unprotectedRouter.post('/upload/deleteOneId', uploadController.deleteOneId);
+protectedRouter.post('/upload/uploadImg', uploadController.uploadImg);
+protectedRouter.get('/upload/getList', uploadController.getList);
+protectedRouter.post('/upload/deleteOneId', uploadController.deleteOneId);
 // 人员
-unprotectedRouter.post('/people/addPeople', peopleController.addPeople);
-unprotectedRouter.post('/people/deletePeople', peopleController.deletePeople);
-unprotectedRouter.post('/people/updatePeople', peopleController.updatePeople);
-unprotectedRouter.get('/people/getPeopleList', peopleController.getPeopleList);
+protectedRouter.post('/people/addPeople', peopleController.addPeople);
+protectedRouter.post('/people/deletePeople', peopleController.deletePeople);
+protectedRouter.post('/people/updatePeople', peopleController.updatePeople);
+protectedRouter.get('/people/getPeopleList', peopleController.getPeopleList);
 // 小组
-unprotectedRouter.post('/group/addGroup', groupController.addGroup);
-unprotectedRouter.post('/group/deleteGroup', groupController.deleteGroup);
-unprotectedRouter.post('/group/updateGroup', groupController.updateGroup);
-unprotectedRouter.get('/group/getGroupList', groupController.getGroupList);
-export { unprotectedRouter };
+protectedRouter.post('/group/addGroup', groupController.addGroup);
+protectedRouter.post('/group/deleteGroup', groupController.deleteGroup);
+protectedRouter.post('/group/updateGroup', groupController.updateGroup);
+protectedRouter.get('/group/getGroupList', groupController.getGroupList);
+export { unprotectedRouter,protectedRouter };

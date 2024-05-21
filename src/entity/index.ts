@@ -99,4 +99,10 @@ export class Image {
 
 	@Column()
 	log_id: number;
+
+	@Column()
+	people_id: number;
+
+	@Column()
+	detect_time:string;
 }

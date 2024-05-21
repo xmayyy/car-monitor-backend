@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import cors from 'koa2-cors';
 import bodyParser from 'koa-bodyparser';
-import { unprotectedRouter } from './routers/index.js';
+import { unprotectedRouter,protectedRouter } from './routers/index.js';
 
 import { User,Image,People,Group } from './entity/index.js';
 // import { Image } from './entity/image.js';
@@ -53,6 +53,7 @@ dataSource
 		app.use(unprotectedRouter.routes()).use(unprotectedRouter.allowedMethods());
 		app.use(jwt({ secret: JWT_SECRET }).unless({ method: 'GET' }));
 		// 需要JWTtoken才可访问
+		app.use(protectedRouter.routes()).use(protectedRouter.allowedMethods());
 		app.listen(3002, () => {
 			console.log('Server is running at http://localhost:3002');
 		});
